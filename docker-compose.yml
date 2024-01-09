@@ -16,10 +16,10 @@ services:
     restart: always
     #Configuramos los usuarios y contraseñas del servidor mysql
     environment:
-      - MYSQL_ROOT_PASSWORD=daniel
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT}
       - MYSQL_DATABASE=wordpress
-      - MYSQL_USER=dvnielsalas
-      - MYSQL_PASSWORD=daniel
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASS}
     expose:
       - 3306
       - 33060
@@ -44,8 +44,8 @@ services:
     restart: always
     environment:
       - WORDPRESS_DB_HOST=db
-      - WORDPRESS_DB_USER=dvnielsalas
-      - WORDPRESS_DB_PASSWORD=daniel
+      - WORDPRESS_DB_USER=${DB_USER}
+      - WORDPRESS_DB_PASSWORD=${DB_PASS}
       - WORDPRESS_DB_NAME=wordpress
     depends_on:
       - db
