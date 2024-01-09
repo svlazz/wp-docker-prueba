@@ -1,0 +1,54 @@
+#Creamos los servicios
+services:
+#Primer servicio es la base de datos MySQL
+  db:
+  #Usaremos la ultima imagen de mysql
+    image: mariadb:10.6.4-focal
+    #Esta linea indica que al iniciarse el servicio mysql, usaremos el metodo
+    #de autenticación llamado mysql_native_password, que es muy común y está
+    #basado en contraseña
+    command: '--default-authentication-plugin=mysql_native_password'
+    #Creamos el volumen donde del contenedor, db sería nuestro host, y este
+    #volumen se montará en la dirección /var/lib/mysql
+    volumes:
+      - db_data:/var/lib/mysql
+    #Esto sirve para que reinicie en caso de fallo o detencion de los contenedoresç
+    restart: always
+    #Configuramos los usuarios y contraseñas del servidor mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=daniel
+      - MYSQL_DATABASE=wordpress
+      - MYSQL_USER=dvnielsalas
+      - MYSQL_PASSWORD=daniel
+    expose:
+      - 3306
+      - 33060
+
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    ports:
+      - 8080:80
+    depends_on:
+      - db
+    environment:
+      #PMA_HOST CONFIGURA AUTOMÁTICAMENTE EL LOGIN PARA CONECTARNOS AL CONTENEDOR
+      - PMA_HOST=db
+
+  wordpress:
+    image: wordpress:latest
+    volumes:
+      - wp_data:/var/www/html
+    ports:
+      - 80:80
+    restart: always
+    environment:
+      - WORDPRESS_DB_HOST=db
+      - WORDPRESS_DB_USER=dvnielsalas
+      - WORDPRESS_DB_PASSWORD=daniel
+      - WORDPRESS_DB_NAME=wordpress
+    depends_on:
+      - db
+volumes:
+  db_data:
+  wp_data:
